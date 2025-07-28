@@ -104,7 +104,7 @@
   • <strong>원인 분석</strong>: 서버 로직에서 만료 여부 확인 조건 누락, 프론트엔드 만료 알림 기능 미흡 <br/>
   • <strong>해결 방법</strong>: 백엔드: 랜덤박스 사용 API에서 dueAt 날짜를 필수 검사하도록 로직 강화 <br/>
                                프론트엔드: 만료된 박스를 ‘사용 불가’ 상태로 UI 표시 및 사용 시도 시 경고 메시지출력 <br/>
-   • <strong>효과</strong>: 만료된 박스 사용 사전 방지, 사용자 혼란 최소화
+  • <strong>효과</strong>: 만료된 박스 사용 사전 방지, 사용자 혼란 최소화
 </details>
 
 <details>
@@ -112,8 +112,8 @@
   • <strong>문제 상황</strong>: 존재하지 않는 issuedBoxId 또는 잘못된 사용자 ID 요청 시 서버가 500 Internal Server Error 반환, 클라이언트에 명확한 오류 안내 없음 <br/>
   • <strong>원인 분석</strong>: 입력값 검증과 권한 확인 로직 부재, 예외 처리 미흡으로 서버 예외가 터짐 <br/>
   • <strong>해결 방법</strong>: o 요청값 Null 체크 및 유효성 검증 로직 추가 <br/>
-                                 o 사용자 권한 검증으로 요청자의 사용 권한 확인 <br/>
-                                 o IllegalArgumentException 및 커스텀 예외 처리기로 명확한 오류 메시지와 HTTP 상태 코드 전달 <br/>
+                                o 사용자 권한 검증으로 요청자의 사용 권한 확인 <br/>
+                                o IllegalArgumentException 및 커스텀 예외 처리기로 명확한 오류 메시지와 HTTP 상태 코드 전달 <br/>
    • <strong>효과</strong>: 안정적 서버 운영과 명확한 에러 안내로 사용자 경험 개선
 </details>
 
