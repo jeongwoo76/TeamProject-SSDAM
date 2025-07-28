@@ -111,9 +111,10 @@
   <summary><strong>2. 랜덤박스 사용 시 예외 미처리로 서버 에러 발생</strong></summary>
   • <strong>문제 상황</strong>: 존재하지 않는 issuedBoxId 또는 잘못된 사용자 ID 요청 시 서버가 500 Internal Server Error 반환, 클라이언트에 명확한 오류 안내 없음 <br/>
   • <strong>원인 분석</strong>: 입력값 검증과 권한 확인 로직 부재, 예외 처리 미흡으로 서버 예외가 터짐 <br/>
-  • <strong>해결 방법</strong>: o 요청값 Null 체크 및 유효성 검증 로직 추가 <br/>
-                                o 사용자 권한 검증으로 요청자의 사용 권한 확인 <br/>
-                                o IllegalArgumentException 및 커스텀 예외 처리기로 명확한 오류 메시지와 HTTP 상태 코드 전달 <br/>
+  • <strong>해결 방법</strong>: <br/>
+  o 요청값 Null 체크 및 유효성 검증 로직 추가 <br/>
+  o 사용자 권한 검증으로 요청자의 사용 권한 확인 <br/>
+  o IllegalArgumentException 및 커스텀 예외 처리기로 명확한 오류 메시지와 HTTP 상태 코드 전달 <br/>
    • <strong>효과</strong>: 안정적 서버 운영과 명확한 에러 안내로 사용자 경험 개선
 </details>
 
@@ -121,13 +122,14 @@
   <summary><strong>3. 동시 요청으로 하나의 박스에서 중복 아이템 발급 문제</strong></summary>
   • <strong>문제 상황</strong>: 여러 탭 또는 동시 요청 시 같은 랜덤박스에서 복수 아이템 중복 발급 현상 발생 <br/>
   • <strong>원인 분석</strong>: sedAt 체크 없이 동시 여러 트랜잭션 처리로 경쟁 상태 발생 <br/>
-  • <strong>해결 방법</strong>:  o 트랜잭션 내에서 usedAt 필드가 null인지 선점하여 체크 <br/>
-                                 o 조건 만족 시에만 업데이트 및 아이템 발급 처리 수행 <br/>
-                                 o 데이터베이스 락 또는 Optimistic Locking 도입 고려 <br/>
+  • <strong>해결 방법</strong>: <br/>
+  o 트랜잭션 내에서 usedAt 필드가 null인지 선점하여 체크 <br/>
+  o 조건 만족 시에만 업데이트 및 아이템 발급 처리 수행 <br/>
+  o 데이터베이스 락 또는 Optimistic Locking 도입 고려 <br/>
    • <strong>효과</strong>: 중복 발급 방지 및 데이터 무결성 확보
 </details>
 <hr/>
 
 ### 느낀 점
 
-![느낀점](https://github.com/user-attachments/assets/ffb9fb8d-812a-4609-bed7-7f06844fa5f0)
+![느낀점](https://github.com/user-attachments/assets/050ba167-c3e6-4008-b79a-27c8ed9c0735)
