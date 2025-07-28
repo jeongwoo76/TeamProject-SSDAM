@@ -83,7 +83,7 @@
 ### 담당 기능
 #### 📺 시연 영상 (이미지 클릭시 유튜브로 이동됩니다.)
 
-[![Watch the video](https://img.youtube.com/vi/qy8u18SyypM/hqdefault.jpg)](https://www.youtube.com/watch?v=qy8u18SyypM&t=7s)
+[![Watch the video](https://github.com/user-attachments/assets/849e4806-7c1e-4a26-b407-a34dcc83ce01)](https://www.youtube.com/watch?v=wXk6alDPh-4)
 
 1. 글, 댓글, 좋아요, 해쉬태그 CRUD 설계 및 기능 구현
 2. 대댓글 작성, 댓글과 대댓글 soft delete 구현
