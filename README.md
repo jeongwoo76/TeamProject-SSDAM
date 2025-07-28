@@ -85,10 +85,10 @@
 
 [![Watch the video](https://github.com/user-attachments/assets/849e4806-7c1e-4a26-b407-a34dcc83ce01)](https://www.youtube.com/watch?v=wXk6alDPh-4)
 
-1. 글, 댓글, 좋아요, 해쉬태그 CRUD 설계 및 기능 구현
-2. 대댓글 작성, 댓글과 대댓글 soft delete 구현
-3. Filter를 이용해 작성글의 공개범위 설정 기능 구현
-4. Json을 이용해 kakao map api 기능 구현
+1. 관리자 상품 CRUD 설계 및 기능 구현
+2. 랜덤박스  CRUD 설계 및 기능 구현
+3. 쿠폰 CRUD 설계 및 기능 구현
+
 <hr/>
 
 ### 데이터 베이스 설계
@@ -99,34 +99,35 @@
 
 ### 트러블 슈팅
 <details>
-  <summary><strong>1. 글과 댓글 즉시 반영</strong></summary>
-  • <strong>문제 상황</strong>: 글과 댓글 작성시 페이지를 수동 리다이렉트해야만 반영되는 문제가 발생 <br/>
-  • <strong>원인 분석</strong>: useEffect, useCallback 등의 최적화 미흡 <br/>
-  • <strong>해결 방법</strong>: useCallback과 useEffect를 사용해 리렌더링을 최소화, 최신 데이터가UI에 즉시 반영될 수 있게 수정
+  <summary><strong>1. 유효기간 미체크로 만료된 랜덤박스 사용 가능 문제</strong></summary>
+  • <strong>문제 상황</strong>: usedAt 또는 dueAt 필드에 대한 유효성 검증 누락으로 만료된 랜덤박스를 계속 사용할 수 있었음 <br/>
+  • <strong>원인 분석</strong>: 서버 로직에서 만료 여부 확인 조건 누락, 프론트엔드 만료 알림 기능 미흡 <br/>
+  • <strong>해결 방법</strong>: 백엔드: 랜덤박스 사용 API에서 dueAt 날짜를 필수 검사하도록 로직 강화 <br/>
+                                프론트엔드: 만료된 박스를 ‘사용 불가’ 상태로 UI 표시 및 사용 시도 시 경고 메시지출력 <br/>
+   • <strong>효과</strong>: 만료된 박스 사용 사전 방지, 사용자 혼란 최소화
 </details>
-<details>
-  <summary><strong>2. 글 목록 무한 스크롤 시 중복 데이터 로딩</strong></summary>
-  • <strong>문제 상황</strong>: 글 리스트에서 데이터를 중복해서 불러오는 오류 발생 <br/>
-  • <strong>원인 분석</strong>: 글 리스트를 불러올 때 기준값 누락 <br/>
-  • <strong>해결 방법</strong>: 글 리스트를 불러올 때 lastId를 기준으로 불러오도록 기준값 부여
-</details>
-<details>
-  <summary><strong>3. 지도 링크가 메인페이지에서 보이지 않는 오류</strong></summary>
-  • <strong>문제 상황</strong>: 로컬스토리지에 저장된 지도 링크를 메인 페이지에서 불러올 수 없는 오류 발생 <br/>
-  • <strong>원인 분석</strong>: 로컬스토리지에 저장된 링크를 사용하는 로직 누락 <br/>
-  • <strong>해결 방법</strong>: localStorage.getItem(‘kakaoMapLink’) 로직 부여<br/> → setLocationLink로 상태값 연동해 사용
-</details>
-<details>
-  <summary><strong>4. 비공개 상태인 리트윗 글 표시</strong></summary>
-  • <strong>문제 상황</strong>: 비공개 상태인 리트윗된 글이 리스트에 표시되는 문제 발생 <br/>
-  • <strong>원인 분석</strong>: 리트윗된 글의 공개범위가 private상태인지 확인하는 구문 누락 <br/>
-  • <strong>해결 방법</strong>: 리트윗한 글의 상태를 확인하는 공개범위 검사 조건 추가
-</details>
-<details>
-  <summary><strong>5. 비로그인 유저 좋아요 클릭</strong></summary>
-  • <strong>문제 상황</strong>: 비로그인 상태의 유저가 좋아요를 클릭 가능한 문제 발생 <br/>
-  • <strong>원인 분석</strong>: 좋아요를 누르는 조건에 Userid검사가 누락되어 발생 문제 <br/>
-  • <strong>해결 방법</strong>: if문을 사용해 !Userid라면 좋아요를 누를 시 로그인 오류 처리
+
+
+
+3. 랜덤박스 사용 시 예외 미처리로 서버 에러 발생
+• 문제: 존재하지 않는 issuedBoxId 또는 잘못된 사용자 ID 요청 시 서버가 500 Internal Server Error 반환, 클라이언트에 명확한 오류 안내 없음
+• 원인 분석: 입력값 검증과 권한 확인 로직 부재, 예외 처리 미흡으로 서버 예외가 터짐
+• 해결방안:
+ o 요청값 Null 체크 및 유효성 검증 로직 추가
+ o 사용자 권한 검증으로 요청자의 사용 권한 확인
+ o IllegalArgumentException 및 커스텀 예외 처리기로 명확한 오류 메시지와 HTTP 상태 코드 전달
+• 효과: 안정적 서버 운영과 명확한 에러 안내로 사용자 경험 개선
+
+5. 동시 요청으로 하나의 박스에서 중복 아이템 발급 문제
+• 문제: 여러 탭 또는 동시 요청 시 같은 랜덤박스에서 복수 아이템 중복 발급 현상 발생
+• 원인 분석: usedAt 체크 없이 동시 여러 트랜잭션 처리로 경쟁 상태 발생
+• 해결방안:
+ o 트랜잭션 내에서 usedAt 필드가 null인지 선점하여 체크
+ o 조건 만족 시에만 업데이트 및 아이템 발급 처리 수행
+ o 데이터베이스 락 또는 Optimistic Locking 도입 고려
+• 효과: 중복 발급 방지 및 데이터 무결성 확보
+
+  
 </details>
 <hr/>
 
